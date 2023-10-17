@@ -7,8 +7,7 @@ export const register = async (req, res) => {
 
     await newUser.save();
     res.status(201).send("User has been created.");
-  } catch (err) { 
-    //next(err);
+  } catch (err) {
     console.error(err);
     res.status(500).send("something went wrong");
   }
@@ -21,15 +20,20 @@ export const login = async (req, res) => {
       password: req.body.password,
     });
 
-    if (!user) return next(createError(404, "User not found!"));
+    if (!user) return res.status(404).send("User not found!");
 
-
-    const webtoken = jwt.sign({
-      id: user._id
-    },process.env.TOKEN_KEY)
+    const webtoken = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.TOKEN_KEY
+    );
 
     const { password, ...info } = user._doc;
-    res.cookie("loginToken",webtoken,{httpOnly:true}).status(200).send(info);
+    res
+      .cookie("loginToken", webtoken, { httpOnly: true })
+      .status(200)
+      .send(info);
   } catch (err) {
     //next(err);
     res.status(500).send("something went wrong");

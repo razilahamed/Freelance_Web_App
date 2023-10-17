@@ -51,10 +51,20 @@ export const deleteGig = async (req, res) => {
           await Gig.findByIdAndDelete(req.params.id);
           res.status(200).send("Gig has been deleted!");
         } catch (err) {
-          next(err);
+        
+          res.status(500).send(err);
         }
     });}
 
 };
-export const getGigs = async (req, res) => {};
-export const getAGig = async (req, res) => {};
+export const getGigs = async (req, res) => {
+    try {
+        const gigs = await Gig.find();
+        res.status(200).send(gigs);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+};
+export const getAGig = async (req, res) => {
+
+};
