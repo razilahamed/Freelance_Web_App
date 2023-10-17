@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.scss";
 import "../../../App.scss";
+import axios from "axios";
+
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const currentUser = {
-    id: 1,
-    username: "Anna",
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8800/api/auth/logout", {
+        withCredentials: true
+      });
+      localStorage.setItem("currentUser", null);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -27,7 +38,7 @@ const Navbar = () => {
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img
-                src="https://images.pexels.com/photos/1115697/pexels-photo-1115697.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                src={currentUser.img||"/Images/unknown.jpg"}
                 alt=""
               />
               <span>{currentUser?.username}</span>
@@ -43,7 +54,7 @@ const Navbar = () => {
                     View Profile
                   </Link>
 
-                  <Link className="link" to="/">
+                  <Link className="link" onClick={handleLogout}>
                     Logout
                   </Link>
                 </div>

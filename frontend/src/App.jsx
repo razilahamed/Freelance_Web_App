@@ -6,6 +6,8 @@ import Gigs from "./pages/gigs/Gigs";
 import Home from "./pages/home/home";
 import GigDisplay from "./pages/gigDisplay/GigDisplay";
 import AddGig from "./pages/addGig/AddGig";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
 
 function App() {
   const Layout = () => {
@@ -26,7 +28,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home/>,
+          element: <Home />,
         },
         {
           path: "/gigs",
@@ -42,21 +44,17 @@ function App() {
         },
         {
           path: "/addGig",
-          element: <AddGig/>,
+          element: <AddGig />,
         },
         {
-          path: "/gig/:id",
-          element: <signin />,
+          path: "/register",
+          element: <Register />,
+        },
+        {
+          path: "/login",
+          element: <Login />,
         },
       ],
-    },
-    {
-      path: "/register",
-      element: <signin />,
-    },
-    {
-      path: "/login",
-      element: <signin />,
     },
   ]);
 
