@@ -1,11 +1,26 @@
 import React from "react";
 import "./Gigs.scss";
 import GigCard from "../../components/gigCard/GigCard";
-import { gigs } from "../../data";
+import { useEffect,useState } from "react";
+import axios from "axios";
 
 
 function Gigs () {
-  
+  const [gigs, setGigs] = useState([]);
+
+  useEffect(() => {
+    // Fetch gigs when the component mounts
+    const fetchGigs = async () => {
+      try {
+        const response = await axios.get("http://localhost:8800/api/gigs/");
+        setGigs(response.data);
+      } catch (error) {
+        console.error("Error fetching gigs:", error);
+      }
+    };
+
+    fetchGigs();
+  }, []);
   
   return (
     <div className="gigs">

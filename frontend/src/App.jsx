@@ -8,6 +8,8 @@ import GigDisplay from "./pages/gigDisplay/GigDisplay";
 import AddGig from "./pages/addGig/AddGig";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
+import Gig from "./pages/gig/Gig";
+import UpdateGig from "./pages/updateGig/UpdateGig";
 
 function App() {
   const Layout = () => {
@@ -53,6 +55,14 @@ function App() {
         {
           path: "/login",
           element: <Login />,
+        },
+        {
+          path: "/gigs/gigbyid/:id",
+          element: <Gig />,
+        },
+        {
+          path: "/updateGig",
+          element: <UpdateGig />,
         },
       ],
     },

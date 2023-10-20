@@ -35,7 +35,6 @@ export const login = async (req, res) => {
       .status(200)
       .send(info);
   } catch (err) {
-    //next(err);
     res.status(500).send("something went wrong");
   }
 };

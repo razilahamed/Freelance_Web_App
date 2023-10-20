@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+
 
 export const deleteUser = async (req, res) => {
   const webtoken = req.cookies.loginToken;
@@ -22,9 +22,13 @@ export const deleteUser = async (req, res) => {
         }else{
           return res.status(403).send("you cannot delete other accounts");
         }
-    })
-  
-  
-}; 
+    })  
+};
+
+export const getUser = async (req, res) => {
+  const user = await userModel.findById(req.params.id);
+  res.status(200).send(user);
+};
+
 
 

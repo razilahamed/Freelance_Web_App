@@ -1,40 +1,71 @@
 import React from "react";
 import "./AddGig.scss";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
 
 const AddGig = () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const navigate = useNavigate();
+  const [gig, setGig] = useState({
+    userId: currentUser?._id,
+    title: "",
+    price: "",
+    deliveryTime: "",
+    desc: "",
+  });
+
+  const handleChange = (e) => {
+    setGig((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8800/api/gigs", gig, {
+        withCredentials: true,
+      });
+      navigate("/mygigs");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="addGig">
-      <div className="container">
-        <h1>Add a New Gig</h1>
-        <div className="sections">
-          <div className="info">
-            <label htmlFor="">Title</label>
-            <input
-              type="text"
-              placeholder="e.g. I need a person to develop a fullstack website"
-            />
-            <label htmlFor="">Category</label>
-            <select name="cats" id="cats">
-              <option value="design">Design</option>
-              <option value="web">Web Development</option>
-              <option value="animation">Animation</option>
-              <option value="music">Music</option>
-            </select>
-            <label htmlFor="">Cover Image</label>
-            <input type="file" />
-            <label htmlFor="">Description</label>
-            <textarea
-              name=""
-              id=""
-              placeholder="Brief description about the gig"
-              cols="0"
-              rows="16"
-            ></textarea>
-            <label htmlFor="">Price</label>
-            <input type="number" />
-            <button>Create</button>
-          </div>
-          {/* <div className="details">
+      <form onSubmit={handleSubmit}>
+        <div className="container">
+          <h1>Add a New Gig</h1>
+          <div className="sections">
+            <div className="info">
+              <label htmlFor="">Title</label>
+              <input
+                type="text"
+                placeholder="e.g. I need a person to develop a fullstack website"
+                onChange={handleChange}
+                name="title"
+              />
+              <label htmlFor="">Description</label>
+              <textarea
+                name="desc"
+                id=""
+                placeholder="Brief description about the gig"
+                cols="0"
+                rows="16"
+                onChange={handleChange}
+              ></textarea>
+              <label htmlFor="">Price</label>
+              <input type="number" onChange={handleChange} name="price" />
+              <label htmlFor="">Delivery Time (e.g. 3 days)</label>
+              <input
+                type="number"
+                onChange={handleChange}
+                name="deliveryTime"
+              />
+              <button>Create</button>
+            </div>
+            {/* <div className="details">
             <label htmlFor="">Service Title</label>
             <input type="text" placeholder="e.g. One-page web design" />
             <label htmlFor="">Short Description</label>
@@ -57,8 +88,9 @@ const AddGig = () => {
             <label htmlFor="">Price</label>
             <input type="number" />
           </div> */}
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
