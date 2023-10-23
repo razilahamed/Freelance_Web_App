@@ -5,6 +5,7 @@ import axios from "axios";
 
 function Register() {
   const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -41,6 +42,7 @@ function Register() {
         return url;
       } catch (err) {
         console.log(err);
+       // setError(err.response.data);
       }
     };
     const imgUrl = await upload(file);
@@ -54,6 +56,7 @@ function Register() {
       navigate("/")
     } catch (err) {
       console.log(err);
+      setError(err.response.data);
     }
   };
   return (
@@ -94,6 +97,7 @@ function Register() {
             onChange={handleChange}
           />
           <button type="submit">Register</button>
+          {error && error}
         </div>
       </form>
     </div>

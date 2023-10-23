@@ -9,7 +9,7 @@ export const register = async (req, res) => {
     res.status(201).send("User has been created.");
   } catch (err) {
     console.error(err);
-    res.status(500).send("something went wrong");
+    res.status(500).send("something went wrong. try again with valid username, password and email ");
   }
 };
 

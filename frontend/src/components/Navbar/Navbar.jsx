@@ -32,7 +32,7 @@ const Navbar = () => {
           <Link className="link" to="/gigs">
             Find Work
           </Link>
-          <Link className="link" to="/b">
+          <Link className="link" to="/">
             Find Freelancer
           </Link>
           {currentUser ? (
@@ -50,8 +50,8 @@ const Navbar = () => {
                   <Link className="link" to="/addGig">
                     Add New Gig
                   </Link>
-                  <Link className="link" to="/MyProfile">
-                    View Profile
+                  <Link className="link" to="/updateGig">
+                    Update Gig
                   </Link>
 
                   <Link className="link" onClick={handleLogout}>

@@ -11,7 +11,7 @@ router.get("/gigbyid/:id",getAGig);
 
 router.get("/mygigs/:id", getMyGigs);
 
-router.delete("/:id", updateGig);
+router.put("/:id", updateGig);
 
 
 export default router;

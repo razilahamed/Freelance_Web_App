@@ -60,11 +60,10 @@ export const getAGig = async (req, res) => {
   }
 };
 
-
 export const getMyGigs = async (req, res) => {
   try {
     const gigs = await Gig.find({
-      userId:req.params.id
+      userId: req.params.id,
     });
     res.status(200).send(gigs);
   } catch (err) {
@@ -84,32 +83,29 @@ export const updateGig = async (req, res) => {
         ...req.body,
       });
 
-             try {
-               const gigId = req.params.id;
-               const updatedGig = req.body; 
+      try {
+        const gigId = req.params.id;
+        const updatedGig = req.body;
 
-               const existingGig = await Gig.findById(gigId);
-               if (!existingGig || existingGig.userId !== userinfo.id) {
-                 res
-                   .status(403)
-                   .send("You do not have permission to update this gig");
-                 return;
-               }
+        const existingGig = await Gig.findById(gigId);
+        if (!existingGig || existingGig.userId !== userinfo.id) {
+          res.status(403).send("You do not have permission to update this gig");
+          return;
+        }
 
-               const result = await Gig.findByIdAndUpdate(gigId, updatedGig, {
-                 new: true, // Return the modified document
-               });
+        const result = await Gig.findByIdAndUpdate(gigId, updatedGig, {
+          new: true, // Return the modified document
+        });
 
-               if (result) {
-                 res.status(200).send("Gig successfully updated");
-               } else {
-                 res.status(404).send("Gig not found");
-               }
-             } catch (error) {
-               console.error("Error updating gig:", error);
-               res.status(500).send("Internal Server Error");
-             }
-
+        if (result) {
+          res.status(200).send("Gig successfully updated");
+        } else {
+          res.status(404).send("Gig not found");
+        }
+      } catch (error) {
+        console.error("Error updating gig:", error);
+        res.status(500).send("Internal Server Error");
+      }
     });
   }
 };

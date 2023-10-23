@@ -32,15 +32,15 @@ const GigCard = ({ item }) => {
             <img src={user.img || "/Images/unknown.jpg"} alt="" />
             <span>{user.username}</span>
           </div>
-          <p>{item.desc}</p>
+          <p>{item.title}</p>
         </div>
         <hr />
         <div className="detail">
           <div className="price">
-            <span>STARTING AT</span>
+            <span>PRICE</span>
             <h2>
               $ {item.price}
-              <sup>99</sup>
+              <sup>00</sup>
             </h2>
           </div>
         </div>

@@ -47,10 +47,9 @@ function GigDisplay() {
         </div>
         <table>
           <tr>
-            <th>Image</th>
             <th>Title</th>
             <th>Price</th>
-            <th>Sales</th>
+            <th>Delivery Time(days)</th>
             <th>Action</th>
           </tr>
           {myGigs.map((gig) => (

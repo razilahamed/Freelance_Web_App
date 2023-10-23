@@ -18,16 +18,17 @@ const UpdateGig = () => {
   });
 
   const [myGigs, setMyGigs] = useState([]);
-  const [selectedGig, setSelectedGig] = useState("");
+  const [selectedGigId, setSelectedGigId] = useState("");
 
   useEffect(() => {
     const fetchGigDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8800/api/gigs/${selectedGig.id}`
+          `http://localhost:8800/api/gigs/${selectedGigId}`
         );
         const gigDetails = response.data;
         setGig({
+          userId:gigDetails.userId,
           title: gigDetails.title,
           price: gigDetails.price,
           deliveryTime: gigDetails.deliveryTime,
@@ -60,14 +61,14 @@ const UpdateGig = () => {
   };
 
   const handleDropdownChange = (e) => {
-    setSelectedGig(e.target.value);
+    setSelectedGigId(e.target.value);
 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8800/api/gigs/${selectedGig.id}`, gig, {
+      await axios.put(`http://localhost:8800/api/gigs/${selectedGigId}`, gig, {
         withCredentials: true,
       });
       navigate("/mygigs");
@@ -86,18 +87,18 @@ const UpdateGig = () => {
               <label htmlFor="title">Select Gig</label>
               <div>
                 <label>Select a Gig: </label>
-                <select onChange={handleDropdownChange} value={selectedGig}>
+                <select onChange={handleDropdownChange} value={selectedGigId}>
                   <option value="" disabled>
                     Select a Gig
                   </option>
                   {myGigs.map((gig) => (
-                    <option key={gig.id} value={gig.id}>
+                    <option key={gig._id} value={gig._id}>
                       {gig.title}
                     </option>
                   ))}
                 </select>
 
-                <p>Selected Gig: {selectedGig._id}</p>
+                {/* <p>Selected Gig: {selectedGigId}</p> */}
               </div>
               <label htmlFor="price">Title</label>
               <input
