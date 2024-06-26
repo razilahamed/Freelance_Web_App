@@ -6,16 +6,19 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/razilahamed/Freelance_sample.git'
+                checkout scm
             }
         }
 
         stage('Build Backend Image') {
             steps {
                 script {
-                    docker.build('freelance_project_backend', './backend')
+                    def backendImage = docker.build("my-backend-image:latest", "-f backend/Dockerfile backend")
+                    backendImage.inside {
+                        // Backend specific commands, if any
+                    }
                 }
             }
         }
@@ -23,7 +26,10 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 script {
-                    docker.build('freelance_project_frontend', './frontend')
+                    def frontendImage = docker.build("my-frontend-image:latest", "-f frontend/Dockerfile frontend")
+                    frontendImage.inside {
+                        // Frontend specific commands, if any
+                    }
                 }
             }
         }
@@ -32,7 +38,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
-                        docker.image('freelance_project_backend').push('latest')
+                        def backendImage = docker.image("my-backend-image:latest")
+                        backendImage.push()
                     }
                 }
             }
@@ -42,7 +49,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_HUB_CREDENTIALS') {
-                        docker.image('freelance_project_frontend').push('latest')
+                        def frontendImage = docker.image("my-frontend-image:latest")
+                        frontendImage.push()
                     }
                 }
             }
@@ -50,17 +58,15 @@ pipeline {
 
         stage('Deploy Backend') {
             steps {
-                script {
-                    sh 'docker run -d -p 5000:5000 freelance_project_backend:latest'
-                }
+                echo 'Deploying Backend...'
+                // Add deployment script/command here
             }
         }
 
         stage('Deploy Frontend') {
             steps {
-                script {
-                    sh 'docker run -d -p 80:80 freelance_project_frontend:latest'
-                }
+                echo 'Deploying Frontend...'
+                // Add deployment script/command here
             }
         }
     }
@@ -68,7 +74,13 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            sh 'docker system prune -f'
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
