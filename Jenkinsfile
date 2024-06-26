@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/Arshad-Codes/freelancing_Project.git'
+                git 'https://github.com/razilahamed/Freelance_sample.git'
             }
         }
         stage('Build Docker Images') {
