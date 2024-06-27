@@ -15,9 +15,10 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 script {
-                    def backendImage = docker.build("my-backend-image:latest", "-f backend/Dockerfile backend")
+                    def backendImage = docker.build("my-backend-image:latest", "-f backend/Dockerfile .")
                     backendImage.inside {
-                        // Backend specific commands, if any
+                        sh 'yarn install'
+                        sh 'yarn run build' // Adjust if 'build' script is different
                     }
                 }
             }
@@ -26,9 +27,10 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 script {
-                    def frontendImage = docker.build("my-frontend-image:latest", "-f frontend/Dockerfile frontend")
+                    def frontendImage = docker.build("my-frontend-image:latest", "-f frontend/Dockerfile .")
                     frontendImage.inside {
-                        // Frontend specific commands, if any
+                        sh 'yarn install'
+                        sh 'yarn run dev' // Adjust if 'dev' script is different
                     }
                 }
             }
@@ -59,14 +61,16 @@ pipeline {
         stage('Deploy Backend') {
             steps {
                 echo 'Deploying Backend...'
-                // Add deployment script/command here
+                // Example deployment command for backend (replace with your actual deployment steps):
+                sh 'ssh user@server "cd /path/to/backend && yarn install && yarn start"'
             }
         }
 
         stage('Deploy Frontend') {
             steps {
                 echo 'Deploying Frontend...'
-                // Add deployment script/command here
+                // Example deployment command for frontend (replace with your actual deployment steps):
+                sh 'rsync -avz frontend/dist/ user@webserver:/var/www/html'
             }
         }
     }
