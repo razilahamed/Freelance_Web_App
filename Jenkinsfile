@@ -14,17 +14,10 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build Backend Image') {
+        stage('Build Images') {
             steps {
                 script {
-                    bat "docker build -t ${BACKEND_IMAGE}:${env.BUILD_NUMBER} -f backend/Dockerfile backend"
-                }
-            }
-        }
-        stage('Build Frontend Image') {
-            steps {
-                script {
-                    bat "docker build -t ${FRONTEND_IMAGE}:${env.BUILD_NUMBER} -f frontend/Dockerfile frontend"
+                    bat 'docker-compose build'
                 }
             }
         }
@@ -32,42 +25,25 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
-                        bat "docker login -u ${env.DOCKER_HUB_CREDENTIALS_USR} -p ${env.DOCKER_HUB_CREDENTIALS_PSW}"
+                        // Authentication is handled by docker.withRegistry
                     }
                 }
             }
         }
-        stage('Push Backend Image') {
+        stage('Push Images') {
             steps {
                 script {
-                    bat "docker push ${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                    docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
+                        bat "docker-compose push"
+                    }
                 }
             }
         }
-        stage('Push Frontend Image') {
+        stage('Deploy Services') {
             steps {
                 script {
-                    bat "docker push ${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
-                }
-            }
-        }
-        stage('Deploy Backend') {
-            steps {
-                script {
-                    // Stop and remove any existing container
-                    bat 'docker stop backend || true && docker rm backend || true'
-                    // Run the backend container
-                    bat "docker run -d --name backend -p 8080:8080 ${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
-                }
-            }
-        }
-        stage('Deploy Frontend') {
-            steps {
-                script {
-                    // Stop and remove any existing container
-                    bat 'docker stop frontend || true && docker rm frontend || true'
-                    // Run the frontend container
-                    bat "docker run -d --name frontend -p 3000:80 ${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
+                    bat 'docker-compose down || true'
+                    bat 'docker-compose up -d'
                 }
             }
         }
