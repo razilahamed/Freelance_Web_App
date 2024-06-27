@@ -15,7 +15,7 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 script {
-                    def backendImage = docker.build("my-backend-image:latest", "-f backend/Dockerfile .")
+                    def backendImage = docker.build("my-backend-image:latest", "./backend")
                     backendImage.inside {
                         sh 'yarn install'
                         sh 'yarn run build' // Adjust if 'build' script is different
