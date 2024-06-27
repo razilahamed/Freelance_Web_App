@@ -1,64 +1,51 @@
 pipeline {
-    agent any
+    agent any 
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('DOCKER_HUB_CREDENTIALS')
-        DOCKER_HUB_USER = 'razilahamed'
-        BACKEND_IMAGE = "${DOCKER_HUB_USER}/backend"
-        FRONTEND_IMAGE = "${DOCKER_HUB_USER}/frontend"
-    }
-
-    stages {
-        stage('Checkout SCM') {
+    stages { 
+        stage('SCM Checkout') {
             steps {
-                checkout scm
+                retry(3) {
+                    git branch: 'main', url: 'https://github.com/razilahamed/Freelance_sample.git'
+                }
             }
         }
-        stage('Build Images') {
+        stage('Build Backend Docker Image') {
+            steps {  
+                dir('Backend') {
+                    bat 'docker build -t razilahamed/backend:%BUILD_NUMBER% .'
+                }
+            }
+        }
+        stage('Build Frontend Docker Image') {
             steps {
-                script {
-                    bat 'docker-compose build'
+                dir('frontend') {
+                    bat 'docker build -t razilahamed/frontend:%BUILD_NUMBER% .'
                 }
             }
         }
         stage('Login to Docker Hub') {
             steps {
-                script {
-                    docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
-                        // Authentication is handled by docker.withRegistry
+                withCredentials([string(credentialsId: 'docker-password', variable: 'dockerpass')]) {
+                    script {
+                        bat "docker login -u razilahamed -p %dockerpass%"
                     }
                 }
             }
         }
-        stage('Push Images') {
+        stage('Push Backend Image') {
             steps {
-                script {
-                    docker.withRegistry('', DOCKER_HUB_CREDENTIALS) {
-                        bat "docker-compose push"
-                    }
-                }
+                bat 'docker push razilahamed/backend:%BUILD_NUMBER%'
             }
         }
-        stage('Deploy Services') {
+        stage('Push Frontend Image') {
             steps {
-                script {
-                    bat 'docker-compose down || true'
-                    bat 'docker-compose up -d'
-                }
+                bat 'docker push razilahamed/frontend:%BUILD_NUMBER%'
             }
         }
     }
     post {
         always {
-            echo 'Cleaning up...'
             bat 'docker logout'
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
